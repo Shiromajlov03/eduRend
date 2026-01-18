@@ -22,7 +22,7 @@ QuadModel::QuadModel(
 	v2.Normal = { 0, 0, 1 };
 	v2.TexCoord = { 1, 1 };
 	v3.Position = { -0.5, 0.5f, 0.0f };
-	v3.Normal = { 0, 0, 1 };
+	v3.Normal = { 0, 0, 1 };	
 	v3.TexCoord = { 1, 0 };
 	vertices.push_back(v0);
 	vertices.push_back(v1);

@@ -24,7 +24,7 @@ public:
 	 * @param[in] far_plane Far plane distance, must be larger than the near plane.
 	*/
 	inline constexpr Camera(float vertical_fov, float aspect_ratio, float near_plane, float far_plane) noexcept 
-		: m_vertical_fov(vertical_fov), m_aspect_ratio(aspect_ratio), m_near_plane(near_plane), m_far_plane(far_plane), m_position(0.0f) {}
+		: m_vertical_fov(vertical_fov), m_aspect_ratio(aspect_ratio), m_near_plane(near_plane), m_far_plane(far_plane), m_position(0.0f), m_pitch(0.0f), m_yaw(0.0f), m_sensitivity(0.002f) {}
 
 	/**
 	 * @brief Move the camera to a new position
@@ -42,6 +42,7 @@ public:
 	 * @brief Changes the camera aspect ratio.
 	 * @param[in] aspect_ratio New aspect ratio, calculate with width / height
 	*/
+	void Rotate(float dx, float dy) noexcept;
 	inline void SetAspect(float aspect_ratio) noexcept { m_aspect_ratio = aspect_ratio; }
 
 	/**
@@ -73,6 +74,9 @@ private:
 	float m_far_plane;
 
 	linalg::vec3f m_position;
+	float m_pitch;      // Rotation around X-axis (vertical look)
+	float m_yaw;        // Rotation around Y-axis (horizontal look)
+	float m_sensitivity; // Mouse sensitivity for rotation
 };
 
 #endif

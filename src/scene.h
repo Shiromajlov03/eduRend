@@ -86,6 +86,8 @@ class OurTestScene : public Scene
 	Camera* m_camera;
 
 	Model* m_quad;
+	Model* m_cube;
+	Model* n_cube;
 	Model* m_sponza;
 
 	mat4f m_sponza_transform;
