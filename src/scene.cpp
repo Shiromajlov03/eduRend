@@ -51,6 +51,7 @@ void OurTestScene::Init()
 	// Create objects
 	m_cube = new Cube(m_dxdevice, m_dxdevice_context);
 	n_cube = new Cube(m_dxdevice, m_dxdevice_context);
+	v_cube = new Cube(m_dxdevice, m_dxdevice_context);
 	m_quad = new QuadModel(m_dxdevice, m_dxdevice_context);
 	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context);
 }
@@ -93,6 +94,37 @@ void OurTestScene::Update(
 	// If no transformation is desired, an identity matrix can be obtained 
 	// via e.g. Mquad = linalg::mat4f_identity; 
 
+	// Update the rotation and orbit angles
+	m_cube_rotation_angle += dt * 0.5f;      // Sun rotation
+	n_cube_orbit_angle += dt * 1.0f;         // Earth orbit around Sun
+	n_cube_rotation_angle += dt * 3.0f;      // Earth rotation
+	v_cube_orbit_angle += dt * 5.0f;         // Moon orbit around Earth (faster)
+	v_cube_rotation_angle += dt * 0.5f;      // Moon rotation (slower)
+
+	//m_cube stays at center but rotates
+	m_cube_transform = mat4f::scaling(1.5f) * mat4f::rotation(m_cube_rotation_angle, 0.0f, 1.0f, 0.0f) * mat4f::translation(0, 0, 0);
+
+	// n_cube (Earth) orbits around Sun
+	float n_orbitX = n_orbit_radius * cos(n_cube_orbit_angle);
+	float n_orbitZ = n_orbit_radius * sin(n_cube_orbit_angle);
+
+	n_cube_transform = mat4f::scaling(0.7f) *
+		mat4f::rotation(n_cube_rotation_angle, 0.0f, 1.0f, 0.0f) *
+		mat4f::translation(n_orbitX, 0, n_orbitZ);
+
+	// Earth's world transform (relative to Sun)
+	mat4f n_cube_world_transform = m_cube_transform * n_cube_transform;
+
+	// v_cube (Moon) orbits around Earth
+	float v_orbitX = v_orbit_radius * cos(v_cube_orbit_angle);
+	float v_orbitZ = v_orbit_radius * sin(v_cube_orbit_angle);
+
+	v_cube_transform = mat4f::scaling(0.4f) *  // Moon is smallest
+		mat4f::rotation(v_cube_rotation_angle, 0.0f, 1.0f, 0.0f) *
+		mat4f::translation(v_orbitX, 0, v_orbitZ);
+
+
+
 	// Quad model-to-world transformation
 	m_quad_transform = mat4f::translation(0, 0, 0) *			// No translation
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
@@ -132,10 +164,23 @@ void OurTestScene::Render()
 	UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
 	m_quad->Render();
 
+	// Render Sun (m_cube)
+	UpdateTransformationBuffer(m_cube_transform, m_view_matrix, m_projection_matrix);
 	m_cube->Render();
 
+	mat4f n_cube_world_transform = m_cube_transform * n_cube_transform;
 
+
+	// Render Earth (n_cube) - relative to Sun
+	UpdateTransformationBuffer(n_cube_world_transform, m_view_matrix, m_projection_matrix);
 	n_cube->Render();
+
+
+	// Render Moon (v_cube) - relative to Earth (which is already relative to Sun)
+	// Moon's world transform = Earth's world transform * Moon's local transform
+	mat4f v_cube_world_transform = n_cube_world_transform * v_cube_transform;
+	UpdateTransformationBuffer(v_cube_world_transform, m_view_matrix, m_projection_matrix);
+	v_cube->Render();
 
 	// Load matrices + Sponza's transformation to the device and render it
 	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);

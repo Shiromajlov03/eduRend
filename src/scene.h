@@ -88,6 +88,7 @@ class OurTestScene : public Scene
 	Model* m_quad;
 	Model* m_cube;
 	Model* n_cube;
+	Model* v_cube;
 	Model* m_sponza;
 
 	mat4f m_sponza_transform;
@@ -101,6 +102,19 @@ class OurTestScene : public Scene
 	float m_angular_velocity = fPI / 2;	// ...and its velocity (radians/sec)
 	float m_camera_velocity = 5.0f;	// Camera movement velocity in units/s
 	float m_fps_cooldown = 0;
+
+	//cube solar system
+	float m_cube_rotation_angle = 0.0f;
+	float n_cube_rotation_angle = 0.0f;
+	float n_cube_orbit_angle = 0.0f;
+	float n_orbit_radius = 3.0f;
+	float v_cube_rotation_angle = 0.0f;
+	float v_orbit_radius = 2.5f;
+	float v_cube_orbit_angle = 0.0f;
+
+	mat4f m_cube_transform;
+	mat4f n_cube_transform;
+	mat4f v_cube_transform;
 
 	void InitTransformationBuffer();
 
