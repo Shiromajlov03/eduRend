@@ -9,6 +9,7 @@
 
 #include "vec\vec.h"
 #include "vec\mat.h"
+#include "InputHandler.h"
 
 /**
  * @brief Manages camera data, also handles generation of view and projection matrices.
@@ -38,11 +39,18 @@ public:
 	*/
 	void Move(const linalg::vec3f& direction) noexcept;
 
+	virtual void Update(float delta_time, const InputHandler& input_handler);
+
+	linalg::vec3f GetForward() const noexcept;
+	linalg::vec3f GetRight() const noexcept;
+
+
 	/**
 	 * @brief Changes the camera aspect ratio.
 	 * @param[in] aspect_ratio New aspect ratio, calculate with width / height
 	*/
 	void Rotate(float dx, float dy) noexcept;
+
 	inline void SetAspect(float aspect_ratio) noexcept { m_aspect_ratio = aspect_ratio; }
 
 	/**
@@ -77,6 +85,7 @@ private:
 	float m_pitch;      // Rotation around X-axis (vertical look)
 	float m_yaw;        // Rotation around Y-axis (horizontal look)
 	float m_sensitivity; // Mouse sensitivity for rotation
+	float m_camera_velocity = 5.0f;	// Camera movement velocity in units/s
 };
 
 #endif
